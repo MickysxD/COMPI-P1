@@ -8,21 +8,20 @@ namespace COMPI_PY1.Clase
 {
     class Token
     {
-        private int no;
-        private int id;
-        private string lexema;
-        private int fila;
-        private int columna;
-
-        public Token(int no, int id, string lexema, int fila, int columna)
+        public int noToken { get; set; }
+        public int idToken { get; set; }
+        public string lexema { get; set; }
+        public int fila { get; set; }
+        public int columna { get; set; }
+        
+        public Token(int noToken, int idToken, string lexema, int fila, int columna)
         {
-            this.no = no;
-            this.id = id;
+            this.noToken = noToken;
+            this.idToken = idToken;
             this.lexema = lexema;
             this.fila = fila;
             this.columna = columna;
         }
         
-
     }
 }
