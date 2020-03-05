@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using COMPI_PY1.Analizador;
 
 namespace COMPI_PY1
 {
@@ -168,6 +169,20 @@ namespace COMPI_PY1
                 img.Image = null;
             }
             
+        }
+
+        private void analizarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            salida.Text = "";
+            TabPage n = entrada.SelectedTab;
+            RichTextBox t = (RichTextBox)n.Controls[0];
+            if (t.Text != "")
+            {
+                Lexico temp = new Lexico(t.Text, salida);
+                temp.Analizar();
+            }
+            
+
         }
     }
 }

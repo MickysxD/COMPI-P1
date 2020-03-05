@@ -13,11 +13,13 @@ namespace COMPI_PY1.Clase
         public string lexema { get; set; }
         public int fila { get; set; }
         public int columna { get; set; }
-        
-        public Token(int noToken, int idToken, string lexema, int fila, int columna)
+        public string tipo { get; set; }
+
+        public Token(int noToken, int idToken, string tipo, string lexema, int fila, int columna)
         {
             this.noToken = noToken;
             this.idToken = idToken;
+            this.tipo = tipo;
             this.lexema = lexema;
             this.fila = fila;
             this.columna = columna;

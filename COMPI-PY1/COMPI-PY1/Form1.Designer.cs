@@ -107,6 +107,7 @@
             this.analizarToolStripMenuItem.Name = "analizarToolStripMenuItem";
             this.analizarToolStripMenuItem.Size = new System.Drawing.Size(75, 24);
             this.analizarToolStripMenuItem.Text = "Analizar";
+            this.analizarToolStripMenuItem.Click += new System.EventHandler(this.analizarToolStripMenuItem_Click);
             // 
             // xMLToolStripMenuItem
             // 
