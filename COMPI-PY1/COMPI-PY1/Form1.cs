@@ -174,13 +174,21 @@ namespace COMPI_PY1
         private void analizarToolStripMenuItem_Click(object sender, EventArgs e)
         {
             salida.Text = "";
-            TabPage n = entrada.SelectedTab;
-            RichTextBox t = (RichTextBox)n.Controls[0];
-            if (t.Text != "")
+            try
             {
-                Lexico temp = new Lexico(t.Text, salida);
-                temp.Analizar();
+                TabPage n = entrada.SelectedTab;
+                RichTextBox t = (RichTextBox)n.Controls[0];
+                if (t.Text != "")
+                {
+                    Lexico temp = new Lexico(t.Text, salida);
+                    temp.Analizar();
+                }
             }
+            catch (NullReferenceException)
+            {
+                MessageBox.Show("No hay pestaña, cree una...","Error");
+            }
+            
             
 
         }

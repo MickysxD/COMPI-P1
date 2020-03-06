@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace COMPI_PY1.Analizador
 {
@@ -82,20 +83,20 @@ namespace COMPI_PY1.Analizador
                             columna++;
                             puntero++;
                         }
-                        //else if (caracter.Equals('{'))
-                        //{
-                        //    listaT.Add(new Token(token, 6, "Llave que abre", "{", fila, columna));
-                        //    token++;
-                        //    columna++;
-                        //    puntero++;
-                        //}
-                        //else if (caracter.Equals('}'))
-                        //{
-                        //    listaT.Add(new Token(token, 7, "Llave que cierra", "}", fila, columna));
-                        //    token++;
-                        //    columna++;
-                        //    puntero++;
-                        //}
+                        else if (caracter.Equals('{'))
+                        {
+                            listaT.Add(new Token(token, 6, "Llave que abre", "{", fila, columna));
+                            token++;
+                            columna++;
+                            puntero++;
+                        }
+                        else if (caracter.Equals('}'))
+                        {
+                            listaT.Add(new Token(token, 7, "Llave que cierra", "}", fila, columna));
+                            token++;
+                            columna++;
+                            puntero++;
+                        }
                         else if (caracter.Equals(':'))
                         {
                             listaT.Add(new Token(token, 8, "Dos puntos", ":", fila, columna));
@@ -340,102 +341,136 @@ namespace COMPI_PY1.Analizador
 
         public void ReporteToken()
         {
-            //SaveFileDialog direccion = new SaveFileDialog("Reportes/TablaTokens");
-            //direccion.Filter = "Tokens |* .html";
-            //direccion.Title = "Guardar";
-            //direccion.FileName = "Tabla de Tokens";
-            //var resultado = direccion.ShowDialog();
-            //if (resultado == DialogResult.OK)
-            //{
-                StreamWriter escribir = new StreamWriter("Reportes\\TablaTokens.html");
-                escribir.WriteLine("{0}", "<!DOCTYPE html>");
-                escribir.WriteLine("{0}", "<html>");
-                escribir.WriteLine("{0}", "<head>");
-                escribir.WriteLine("{0}", "<title>");
-                escribir.WriteLine("{0}", "Tabla de Tokens");
-                escribir.WriteLine("{0}", "</title>");
-                escribir.WriteLine("{0}", "</head>");
-                escribir.WriteLine("{0}", "<body>");
-                escribir.WriteLine("{0}", "<table>");
-                escribir.WriteLine("{0}", "<tr>");
-                escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "No", "</strong>", "</td>");
-                escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "Id Token", "</strong>", "</td>");
-                escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "Tipo", "</strong>", "</td>");
-                escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "Lexema", "</strong>", "</td>");
-                escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "Fila", "</strong>", "</td>");
-                escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "Columna", "</strong>", "</td>");
-                escribir.WriteLine("{0}", "</tr>");
+            XmlDocument documento = new XmlDocument();
+            XmlElement raiz = documento.CreateElement("ListaTokens");
+            documento.AppendChild(raiz);
 
+            for (int i = 0; i < listaT.Count; i++)
+            {
+                XmlElement token = documento.CreateElement("Token");
+                raiz.AppendChild(token);
 
-                for (int i = 0; i < listaT.Count; i++)
-                {
-                    escribir.WriteLine("{0}", "<tr>");
-                    escribir.WriteLine("{0}{1}{2}", "<td>", listaT[i].noToken, "</td>");
-                    escribir.WriteLine("{0}{1}{2}", "<td>", listaT[i].idToken, "</td>");
-                    escribir.WriteLine("{0}{1}{2}", "<td>", listaT[i].tipo, "</td>");
-                    escribir.WriteLine("{0}{1}{2}", "<td>", listaT[i].lexema, "</td>");
-                    escribir.WriteLine("{0}{1}{2}", "<td>", listaT[i].fila, "</td>");
-                    escribir.WriteLine("{0}{1}{2}", "<td>", listaT[i].columna, "</td>");
-                    escribir.WriteLine("{0}", "</tr>");
+                XmlElement nombre = documento.CreateElement("Nombre");
+                nombre.AppendChild(documento.CreateTextNode(listaT[i].tipo));
+                token.AppendChild(nombre);
 
-                }
+                XmlElement valor = documento.CreateElement("Valor");
+                valor.AppendChild(documento.CreateTextNode(listaT[i].lexema));
+                token.AppendChild(valor);
 
-                escribir.WriteLine("{0}", "</table>");
-                escribir.WriteLine("{0}", "</body>");
-                escribir.WriteLine("{0}", "</html>");
-                escribir.Close();
-            //}
-            System.Diagnostics.Process.Start("Reportes\\TablaTokens.html");
+                XmlElement fila = documento.CreateElement("Fila");
+                fila.AppendChild(documento.CreateTextNode(listaT[i].fila.ToString()));
+                token.AppendChild(fila);
+
+                XmlElement columna = documento.CreateElement("Columna");
+                columna.AppendChild(documento.CreateTextNode(listaT[i].columna.ToString()));
+                token.AppendChild(columna);
+            }
+
+            documento.Save("Reportes\\TablaTokens.xml");
             
-            //Process.Start("Reportes\\TablaTokens..html");
+            //StreamWriter escribir = new StreamWriter("Reportes\\TablaTokens.html");
+            //escribir.WriteLine("{0}", "<!DOCTYPE html>");
+            //escribir.WriteLine("{0}", "<html>");
+            //escribir.WriteLine("{0}", "<head>");
+            //escribir.WriteLine("{0}", "<title>");
+            //escribir.WriteLine("{0}", "Tabla de Tokens");
+            //escribir.WriteLine("{0}", "</title>");
+            //escribir.WriteLine("{0}", "</head>");
+            //escribir.WriteLine("{0}", "<body>");
+            //escribir.WriteLine("{0}", "<table>");
+            //escribir.WriteLine("{0}", "<tr>");
+            //escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "No", "</strong>", "</td>");
+            //escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "Id Token", "</strong>", "</td>");
+            //escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "Tipo", "</strong>", "</td>");
+            //escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "Lexema", "</strong>", "</td>");
+            //escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "Fila", "</strong>", "</td>");
+            //escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "Columna", "</strong>", "</td>");
+            //escribir.WriteLine("{0}", "</tr>");
+
+
+            //for (int i = 0; i < listaT.Count; i++)
+            //{
+            //    escribir.WriteLine("{0}", "<tr>");
+            //    escribir.WriteLine("{0}{1}{2}", "<td>", listaT[i].noToken, "</td>");
+            //    escribir.WriteLine("{0}{1}{2}", "<td>", listaT[i].idToken, "</td>");
+            //    escribir.WriteLine("{0}{1}{2}", "<td>", listaT[i].tipo, "</td>");
+            //    escribir.WriteLine("{0}{1}{2}", "<td>", listaT[i].lexema, "</td>");
+            //    escribir.WriteLine("{0}{1}{2}", "<td>", listaT[i].fila, "</td>");
+            //    escribir.WriteLine("{0}{1}{2}", "<td>", listaT[i].columna, "</td>");
+            //    escribir.WriteLine("{0}", "</tr>");
+
+            //}
+
+            //escribir.WriteLine("{0}", "</table>");
+            //escribir.WriteLine("{0}", "</body>");
+            //escribir.WriteLine("{0}", "</html>");
+            //escribir.Close();
+            
+            Process.Start("Reportes\\TablaTokens.xml");
         }
 
         public void ReporteError()
         {
-            //SaveFileDialog direccion = new SaveFileDialog("Reportes/TablaTokens");
-            //direccion.Filter = "Tokens |* .html";
-            //direccion.Title = "Guardar";
-            //direccion.FileName = "Tabla de Tokens";
-            //var resultado = direccion.ShowDialog();
-            //if (resultado == DialogResult.OK)
-            //{
-            StreamWriter escribir = new StreamWriter("Reportes\\TablaErrores.html");
-            escribir.WriteLine("{0}", "<!DOCTYPE html>");
-            escribir.WriteLine("{0}", "<html>");
-            escribir.WriteLine("{0}", "<head>");
-            escribir.WriteLine("{0}", "<title>");
-            escribir.WriteLine("{0}", "Tabla de errores");
-            escribir.WriteLine("{0}", "</title>");
-            escribir.WriteLine("{0}", "</head>");
-            escribir.WriteLine("{0}", "<body>");
-            escribir.WriteLine("{0}", "<table>");
-            escribir.WriteLine("{0}", "<tr>");
-            escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "No", "</strong>", "</td>");
-            escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "Lexema", "</strong>", "</td>");
-            escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "Fila", "</strong>", "</td>");
-            escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "Columna", "</strong>", "</td>");
-            escribir.WriteLine("{0}", "</tr>");
-
-
+            XmlDocument documento = new XmlDocument();
+            XmlElement raiz = documento.CreateElement("ListaErrores");
+            documento.AppendChild(raiz);
+            
             for (int i = 0; i < listaE.Count; i++)
             {
-                escribir.WriteLine("{0}", "<tr>");
-                escribir.WriteLine("{0}{1}{2}", "<td>", listaE[i].noToken, "</td>");
-                escribir.WriteLine("{0}{1}{2}", "<td>", listaE[i].lexema, "</td>");
-                escribir.WriteLine("{0}{1}{2}", "<td>", listaE[i].fila, "</td>");
-                escribir.WriteLine("{0}{1}{2}", "<td>", listaE[i].columna, "</td>");
-                escribir.WriteLine("{0}", "</tr>");
+                XmlElement token = documento.CreateElement("Token");
+                raiz.AppendChild(token);
+                
+                XmlElement valor = documento.CreateElement("Valor");
+                valor.AppendChild(documento.CreateTextNode(listaE[i].lexema));
+                token.AppendChild(valor);
 
+                XmlElement fila = documento.CreateElement("Fila");
+                fila.AppendChild(documento.CreateTextNode(listaE[i].fila.ToString()));
+                token.AppendChild(fila);
+
+                XmlElement columna = documento.CreateElement("Columna");
+                columna.AppendChild(documento.CreateTextNode(listaE[i].columna.ToString()));
+                token.AppendChild(columna);
             }
 
-            escribir.WriteLine("{0}", "</table>");
-            escribir.WriteLine("{0}", "</body>");
-            escribir.WriteLine("{0}", "</html>");
-            escribir.Close();
-            //}
-            //System.Diagnostics.Process.Start("Reportes\\TablaTokens.html");
+            documento.Save("Reportes\\TablaErrores.xml");
 
-            Process.Start("Reportes\\TablaErrores.html");
+            //StreamWriter escribir = new StreamWriter("Reportes\\TablaErrores.html");
+            //escribir.WriteLine("{0}", "<!DOCTYPE html>");
+            //escribir.WriteLine("{0}", "<html>");
+            //escribir.WriteLine("{0}", "<head>");
+            //escribir.WriteLine("{0}", "<title>");
+            //escribir.WriteLine("{0}", "Tabla de errores");
+            //escribir.WriteLine("{0}", "</title>");
+            //escribir.WriteLine("{0}", "</head>");
+            //escribir.WriteLine("{0}", "<body>");
+            //escribir.WriteLine("{0}", "<table>");
+            //escribir.WriteLine("{0}", "<tr>");
+            //escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "No", "</strong>", "</td>");
+            //escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "Lexema", "</strong>", "</td>");
+            //escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "Fila", "</strong>", "</td>");
+            //escribir.WriteLine("{0}{1}{2}{3}{4}", "<td>", "<strong>", "Columna", "</strong>", "</td>");
+            //escribir.WriteLine("{0}", "</tr>");
+
+
+            //for (int i = 0; i < listaE.Count; i++)
+            //{
+            //    escribir.WriteLine("{0}", "<tr>");
+            //    escribir.WriteLine("{0}{1}{2}", "<td>", listaE[i].noToken, "</td>");
+            //    escribir.WriteLine("{0}{1}{2}", "<td>", listaE[i].lexema, "</td>");
+            //    escribir.WriteLine("{0}{1}{2}", "<td>", listaE[i].fila, "</td>");
+            //    escribir.WriteLine("{0}{1}{2}", "<td>", listaE[i].columna, "</td>");
+            //    escribir.WriteLine("{0}", "</tr>");
+
+            //}
+
+            //escribir.WriteLine("{0}", "</table>");
+            //escribir.WriteLine("{0}", "</body>");
+            //escribir.WriteLine("{0}", "</html>");
+            //escribir.Close();
+
+            Process.Start("Reportes\\TablaErrores.xml");
         }
 
     }
