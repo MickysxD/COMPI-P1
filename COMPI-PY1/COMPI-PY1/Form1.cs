@@ -25,6 +25,8 @@ namespace COMPI_PY1
             InitializeComponent();
             button1_Click(new object(), new EventArgs());
             seleccion.DropDownStyle = ComboBoxStyle.DropDownList;
+            seleccion.Items.Clear();
+            //seleccion.Items.Add("Puto");
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -174,14 +176,17 @@ namespace COMPI_PY1
         private void analizarToolStripMenuItem_Click(object sender, EventArgs e)
         {
             salida.Text = "";
+            seleccion.Items.Clear();
+            //seleccion.Items.Add("Puto");
             try
             {
                 TabPage n = entrada.SelectedTab;
                 RichTextBox t = (RichTextBox)n.Controls[0];
                 if (t.Text != "")
                 {
-                    Lexico temp = new Lexico(t.Text, salida);
+                    Lexico temp = new Lexico(t.Text, salida, seleccion);
                     temp.Analizar();
+
                 }
             }
             catch (NullReferenceException)

@@ -14,14 +14,19 @@ namespace COMPI_PY1.Analizador
         public List<TokenError> listaE { get; set; }
         public string texto { get; set; }
         public RichTextBox salida { get; set; }
-        public Lexico(string texto, RichTextBox t)
+        public ComboBox seleccion { get; set; }
+        public List<Exprecion> expreciones { get; set; }
+
+        public Lexico(string texto, RichTextBox t, ComboBox seleccion)
         {
             this.texto = texto;
             this.salida = t;
-            listaT = new List<Token>();
-            listaE = new List<TokenError>();
+            this.seleccion = seleccion;
+            this.listaT = new List<Token>();
+            this.listaE = new List<TokenError>();
+            this.expreciones = new List<Exprecion>();
         }
-
+     
         public void Analizar() {
             int token = 0;
             int error = 0;
@@ -35,7 +40,7 @@ namespace COMPI_PY1.Analizador
 
             while (puntero < linea.Length) {
                 caracter = linea[puntero];
-                salida.AppendText(caracter+"");
+                //salida.AppendText(caracter+"");
                 switch (estado)
                 {
                     case 0:
@@ -153,6 +158,12 @@ namespace COMPI_PY1.Analizador
                         {
                             puntero++;
                             estado = 8;
+                        }
+                        else if (caracter.Equals('-'))
+                        {
+                            puntero++;
+                            lexema += caracter;
+                            estado = 10;
                         }
                         else
                         {
@@ -284,7 +295,13 @@ namespace COMPI_PY1.Analizador
                         break;
 
                     case 8:
-                        if (!caracter.Equals('\"'))
+                        if (caracter.Equals('\\'))
+                        {
+                            lexema += caracter;
+                            puntero++;
+                            estado = 9;
+                        }
+                        else if (!caracter.Equals('\"'))
                         {
                             lexema += caracter;
                             puntero++;
@@ -297,6 +314,30 @@ namespace COMPI_PY1.Analizador
                             lexema = "";
                             puntero++;
                             estado = 0;
+                        }
+                        break;
+
+                    case 9:
+                        lexema += caracter;
+                        puntero++;
+                        estado = 8;
+                        break;
+
+                    case 10:
+                        if (caracter.Equals('>'))
+                        {
+                            listaT.Add(new Token(token, 20, "Asignacion", lexema+caracter, fila, columna));
+                            token++;
+                            columna++;
+                            lexema = "";
+                            puntero++;
+                            estado = 0;
+                        }
+                        else
+                        {
+                            lexema = "";
+                            puntero--;
+                            estado = 100;
                         }
                         break;
 
@@ -329,14 +370,122 @@ namespace COMPI_PY1.Analizador
 
             if (listaE.Count > 0)
             {
+                ReporteToken();
                 ReporteError();
             }
             else
             {
                 ReporteToken();
+                Expreciones();
             }
 
 
+        }
+
+        public void Expreciones() {
+            //epsilon ε
+
+            Token temp = null;
+            Exprecion nuevo = new Exprecion();
+            int estado = 0;
+            int i = 0;
+
+            while (i < listaT.Count)
+            {
+                temp = listaT[i];
+                int no = temp.idToken;
+                switch (estado)
+                {
+                    case 0:
+                        if (no == 14) {
+                            i++;
+                            estado = 1;
+                        }
+                        else if (no == 15)
+                        {
+                            i++;
+                            estado = 2;
+                            nuevo = new Exprecion();
+                            nuevo.nombre = temp;
+                        }
+                        else
+                        {
+                            i++;
+                        }
+                        break;
+
+                    case 1:
+                        if (no == 9)
+                        {
+                            i++;
+                            estado = 0;
+                        }
+                        else
+                        {
+                            i++;
+                        }
+                        break;
+
+                    case 2:
+                        if (no == 20)
+                        {
+                            i++;
+                            estado = 3;
+                        }
+                        else
+                        {
+                            estado = 1;
+                        }
+                        break;
+
+                    case 3:
+                        if (no == 1 || no == 2 || no == 3 || no == 4 || no == 5 || no == 19)
+                        {
+                            nuevo.tokens.Add(temp);
+                            i++;
+                            estado = 3;
+                        }
+                        else if (no == 6)
+                        {
+                            i++;
+                            estado = 4;
+                        }
+                        else if (no == 9)
+                        {
+                            expreciones.Add(nuevo);
+                            nuevo.grafo.comienzo(nuevo.tokens, nuevo.nombre);
+                            seleccion.Items.Add(nuevo.nombre.lexema+"Grafo");
+                            i++;
+                            estado = 0;
+                        }
+                        else
+                        {
+                            estado = 1;
+                        }
+                        break;
+
+                    case 4:
+                        if (no == 15)
+                        {
+                            nuevo.tokens.Add(temp);
+                            i++;
+                            estado = 4;
+                        }
+                        else if (no == 7)
+                        {
+                            i++;
+                            estado = 3;
+                        }
+                        else
+                        {
+                            estado = 1;
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
+            }
         }
 
         public void ReporteToken()
