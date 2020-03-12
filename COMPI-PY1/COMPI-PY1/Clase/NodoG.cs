@@ -10,17 +10,23 @@ namespace COMPI_PY1.Clase
     {
         public NodoG primero { get; set; }
         public NodoG segundo { get; set; }
+        public int pid { get; set; }
+        public int sid { get; set; }
         public string nombre { get; set; }
+        public int id { get; set; }
         public string p { get; set; }
         public string s { get; set; }
 
-        public NodoG(string nombre)
+        public NodoG(int id)
         {
             this.primero = null;
             this.segundo = null;
-            this.nombre = nombre;
+            this.id = id;
+            this.nombre = id.ToString();
             this.p = "";
             this.s = "";
+            this.pid = -1;
+            this.sid = -1;
         }
     }
 }

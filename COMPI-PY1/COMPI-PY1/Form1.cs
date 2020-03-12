@@ -178,8 +178,8 @@ namespace COMPI_PY1
             salida.Text = "";
             seleccion.Items.Clear();
             //seleccion.Items.Add("Puto");
-            try
-            {
+            //try
+            //{
                 TabPage n = entrada.SelectedTab;
                 RichTextBox t = (RichTextBox)n.Controls[0];
                 if (t.Text != "")
@@ -188,11 +188,11 @@ namespace COMPI_PY1
                     temp.Analizar();
 
                 }
-            }
-            catch (NullReferenceException)
-            {
-                MessageBox.Show("No hay pestaña, cree una...","Error");
-            }
+            //}
+            //catch (NullReferenceException)
+            //{
+            //    MessageBox.Show("No hay pestaña, cree una...","Error");
+            //}
             
             
 
