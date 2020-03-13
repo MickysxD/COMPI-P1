@@ -52,6 +52,7 @@
     <Compile Include="Clase\NodoG.cs" />
     <Compile Include="Clase\Token.cs" />
     <Compile Include="Clase\TokenError.cs" />
+    <Compile Include="Clase\Transicion.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -11,6 +11,7 @@ namespace COMPI_PY1.Clase
     {
         public List<Token> tokens { get; set; }
         public List<NodoG> nodos { get; set; }
+        public List<Token> transiciones { get; set; }
         public NodoG primero { get; set; }
         public NodoG ultimo { get; set; }
         public int id { get; set; }
@@ -20,6 +21,7 @@ namespace COMPI_PY1.Clase
         public Grafo()
         {
             this.nodos = new List<NodoG>();
+            this.transiciones = new List<Token>();
             this.id = 0;
             this.i = 0;
         }
@@ -35,237 +37,7 @@ namespace COMPI_PY1.Clase
             recursivo();
 
             //primero = llenar();
-            graficar();
-        }
-
-        public NodoG llenar()
-        {
-            if (primero == null)
-            {
-                NodoG p = new NodoG(id);
-                nodos.Add(p);
-                primero = p;
-                id++;
-            }
-
-            if (tokens[i].idToken == 1)
-            {
-                i++;
-                
-                NodoG m = punto();
-                
-                NodoG u = punto();
-
-                return m;
-            }
-            else if (tokens[i].idToken == 4)
-            {
-                i++;
-
-                int pri = id-1;
-                
-                NodoG s = new NodoG(id);
-                int seg = id;
-                nodos[pri].p = "ε";
-                nodos[pri].primero = s;
-                nodos.Add(s);
-                id++;
-
-                NodoG t = asterisco();
-
-                NodoG c = new NodoG(id);
-                nodos[id - 1].p = "ε";
-                nodos[id - 1].primero = s;
-                nodos[id - 1].s = "ε";
-                nodos[id - 1].segundo = c;
-                nodos[pri].s = "ε";
-                nodos[pri].segundo = c;
-                nodos.Add(c);
-                id++;
-
-                return s;
-            }
-            else if (tokens[i].idToken == 2)
-            {
-                i++;
-                int p = id-1;
-
-                NodoG s1 = new NodoG(id);
-                nodos[p].p = "ε";
-                nodos[p].primero = s1;
-                nodos.Add(s1);
-                id++;
-
-                NodoG t1 = or();
-
-                NodoG c = new NodoG(-1);
-                nodos[id - 1].p = "ε";
-                nodos[id - 1].primero = c;
-
-                NodoG s2 = new NodoG(id);
-                nodos[p].s = "ε";
-                nodos[p].segundo = s2;
-                nodos.Add(s2);
-                id++;
-
-                NodoG t2 = or();
-
-                c.nombre = id.ToString();
-                nodos[id-1].p = "ε";
-                nodos[id-1].primero = c;
-                nodos.Add(c);
-                id++;
-
-                return nodos[p];
-            }
-            else if (tokens[i].idToken == 3)
-            {
-                i++;
-                int p = id - 1;
-
-                NodoG s1 = new NodoG(id);
-                nodos[p].p = "ε";
-                nodos[p].primero = s1;
-                nodos.Add(s1);
-                id++;
-
-                NodoG t1 = or();
-
-                NodoG c = new NodoG(-1);
-                nodos[id - 1].p = "ε";
-                nodos[id - 1].primero = c;
-
-                //comentar s2 y t2 para omitir epxilons y ser directo
-                NodoG s2 = new NodoG(id);
-                nodos[p].s = "ε";
-                nodos[p].segundo = s2;
-                nodos.Add(s2);
-                id++;
-
-                NodoG t2  = new NodoG(id);
-                nodos[id - 1].p = "ε";
-                nodos[id - 1].primero = t2;
-                nodos.Add(t2);
-                id++;
-                
-                //cambiar tambien (id-1 por p) y (p por s) y (primero por segundo)
-                c.nombre = id.ToString();
-                nodos[id - 1].p = "ε";
-                nodos[id - 1].primero = c;
-                nodos.Add(c);
-                id++;
-
-                return nodos[p];
-            }
-            if (tokens[i].idToken == 5)
-            {
-                i++;
-
-                NodoG p;
-                bool si = false;
-                if (tokens[i].idToken != 15 && tokens[i].idToken != 19)
-                {
-                    p = punto();
-                    i -= 2+contador;
-                    si = true;
-                }
-                else
-                {
-                    p = punto();
-                    i--;
-                }
-                
-
-
-                int pri = id - 1;
-
-                NodoG s = new NodoG(id);
-                int seg = id;
-                nodos[pri].p = "ε";
-                nodos[pri].primero = s;
-                nodos.Add(s);
-                id++;
-
-                NodoG t = asterisco();
-
-                NodoG c = new NodoG(id);
-                nodos[id - 1].p = "ε";
-                nodos[id - 1].primero = s;
-                nodos[id - 1].s = "ε";
-                nodos[id - 1].segundo = c;
-                nodos[pri].s = "ε";
-                nodos[pri].segundo = c;
-                nodos.Add(c);
-                id++;
-                if (si)
-                {
-                    si = false;
-                    contador += 1;
-                }
-
-                return p;
-            }
-            return null;
-        }
-        //epsilon ε
-        public NodoG punto()
-        {
-            if (tokens[i].idToken == 15 || tokens[i].idToken == 19)
-            {
-                NodoG temp = new NodoG(id);
-                nodos[id - 1].p = tokens[i].lexema;
-                nodos[id - 1].primero = temp;
-                nodos.Add(temp);
-                id++;
-
-                i++;
-                return temp;
-            }
-            else
-            {
-                return llenar();
-            }
-            
-        }
-
-        public NodoG asterisco()
-        {
-            if (tokens[i].idToken == 15 || tokens[i].idToken == 19)
-            {
-                NodoG temp = new NodoG(id);
-                nodos[id - 1].p = tokens[i].lexema;
-                nodos[id - 1].primero = temp;
-                nodos.Add(temp);
-                id++;
-
-                i++;
-                return temp;
-            }
-            else
-            {
-                return llenar();
-            }
-
-        }
-
-        public NodoG or()
-        {
-            if (tokens[i].idToken == 15 || tokens[i].idToken == 19)
-            {
-                NodoG temp = new NodoG(id);
-                nodos[id - 1].p = tokens[i].lexema;
-                nodos[id - 1].primero = temp;
-                nodos.Add(temp);
-                id++;
-
-                i++;
-                return temp;
-            }
-            else
-            {
-                return llenar();
-            }
-
+            //graficar();
         }
         
         public void graficar()
@@ -434,10 +206,10 @@ namespace COMPI_PY1.Clase
                     cop.Add(tokens[j]);
                 }
 
-                graficar();
+                //graficar();
 
                 int seg = id - 1;
-                Grafo copia = copia3(cop);
+                Grafo copia = copiar(cop);
 
                 for (int i = 0; i < copia.nodos.Count; i++)
                 {
@@ -465,7 +237,7 @@ namespace COMPI_PY1.Clase
                 nodos[seg].primero = copia.primero;
                 //copia.atrasp = nodos[seg];
 
-                graficar();
+                //graficar();
 
                 NodoG c = new NodoG(id);
 
@@ -486,63 +258,18 @@ namespace COMPI_PY1.Clase
 
                 nodos.Add(c);
                 id++;
-                graficar();
+                //graficar();
 
                 return p;
             }
-            else {
+            else
+            {
                 puntoR();
             }
             return null;
         }
-
-        public NodoG copiar(NodoG raiz) {
-            NodoG temp = new NodoG(id);
-            //temp.nombre = temp.id.ToString();
-            temp.p = raiz.p;
-            temp.s = raiz.s;
-            nodos.Add(temp);
-            id++;
-            
-            if (raiz.primero != null) {
-                temp.primero = copiar(raiz.primero);
-            }
-            
-            if (raiz.segundo != null)
-            {
-                temp.segundo = copiar(raiz.segundo);
-            }
-            
-
-
-            return temp;
-        }
-
-        public NodoG copiar2(NodoG raiz)
-        {
-            NodoG temp = new NodoG(id);
-            temp.p = raiz.p;
-            temp.s = raiz.s;
-            nodos.Add(temp);
-            int tid = id;
-            id++;
-
-            if (raiz.primero != null)
-            {
-                temp.pid = tid + (raiz.primero.id - raiz.id);
-                copiar2(raiz.primero);
-            }
-
-            if (raiz.segundo != null)
-            {
-                temp.sid = tid + (raiz.segundo.id - raiz.id);
-                copiar2(raiz.segundo);
-            }
-            
-            return temp;
-        }
-
-        public Grafo copia3(List<Token> t) {
+        
+        public Grafo copiar(List<Token> t) {
             Grafo temp = new Grafo();
             temp.comienzo(t, new Token(-1,-1,"asdf","pruebas"+i,-1,-1));
             
@@ -555,7 +282,9 @@ namespace COMPI_PY1.Clase
             {
                 NodoG temp = new NodoG(id);
                 nodos[id - 1].p = tokens[i].lexema;
+                agregart(tokens[i]);
                 nodos[id - 1].primero = temp;
+                nodos[id - 1].idp = tokens[i].idToken;
                 //temp.atrasp = nodos[id - 1];
                 nodos.Add(temp);
                 id++;
@@ -576,7 +305,9 @@ namespace COMPI_PY1.Clase
             {
                 NodoG temp = new NodoG(id);
                 nodos[id - 1].p = tokens[i].lexema;
+                agregart(tokens[i]);
                 nodos[id - 1].primero = temp;
+                nodos[id - 1].idp = tokens[i].idToken;
                 //temp.atrasp = nodos[id - 1];
                 nodos.Add(temp);
                 id++;
@@ -597,7 +328,9 @@ namespace COMPI_PY1.Clase
             {
                 NodoG temp = new NodoG(id);
                 nodos[id - 1].p = tokens[i].lexema;
+                agregart(tokens[i]);
                 nodos[id - 1].primero = temp;
+                nodos[id - 1].idp = tokens[i].idToken;
                 //temp.atrasp = nodos[id - 1];
                 nodos.Add(temp);
                 id++;
@@ -612,5 +345,24 @@ namespace COMPI_PY1.Clase
 
         }
 
+        public void agregart(Token nuevo) {
+            bool esta = true;
+            foreach (Token item in transiciones)
+            {
+                if (nuevo.lexema.Equals(item.lexema) && nuevo.idToken == 15) {
+                    esta = false;
+                }
+                else if (nuevo.lexema.Equals(item.lexema) && nuevo.idToken == 19)
+                {
+                    esta = false;
+                }
+            }
+
+            if (esta)
+            {
+                transiciones.Add(nuevo);
+                transiciones.Sort();
+            }
+        }
     }
 }

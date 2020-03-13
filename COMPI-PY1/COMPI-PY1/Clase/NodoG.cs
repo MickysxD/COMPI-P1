@@ -12,6 +12,7 @@ namespace COMPI_PY1.Clase
         public NodoG segundo { get; set; }
         public int pid { get; set; }
         public int sid { get; set; }
+        public int idp { get; set; }
         public string nombre { get; set; }
         public int id { get; set; }
         public string p { get; set; }

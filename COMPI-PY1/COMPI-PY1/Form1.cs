@@ -186,6 +186,7 @@ namespace COMPI_PY1
                 {
                     Lexico temp = new Lexico(t.Text, salida, seleccion);
                     temp.Analizar();
+                    
 
                 }
             //}
