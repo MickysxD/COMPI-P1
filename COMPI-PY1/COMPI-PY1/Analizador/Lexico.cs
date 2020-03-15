@@ -455,6 +455,7 @@ namespace COMPI_PY1.Analizador
                             expreciones.Add(nuevo);
                             nuevo.grafo.comienzo(nuevo.tokens, nuevo.nombre);
                             nuevo.grafo.graficar();
+                            nuevo.crearPrimera();
                             seleccion.Items.Add(nuevo.nombre.lexema+"Grafo");
                             seleccion.Items.Add(nuevo.nombre.lexema + "Transicion");
                             i++;

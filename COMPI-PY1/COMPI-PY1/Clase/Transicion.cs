@@ -20,5 +20,12 @@ namespace COMPI_PY1.Clase
             this.siguiente = null;
             this.nombre = nombre;
         }
+
+        public Transicion(string nombre, List<int> nueva)
+        {
+            this.lista = nueva;
+            this.siguiente = null;
+            this.nombre = nombre;
+        }
     }
 }
