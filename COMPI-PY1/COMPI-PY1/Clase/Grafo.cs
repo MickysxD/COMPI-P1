@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -42,7 +43,7 @@ namespace COMPI_PY1.Clase
         
         public void graficar()
         {
-            StreamWriter escribir = new StreamWriter("Reportes\\"+nombre.lexema+"Grafo.txt");
+            StreamWriter escribir = new StreamWriter("Reportes\\"+nombre.lexema+ "AFN.txt");
             escribir.WriteLine("digraph D{\nrankdir=LR;");
 
             for (int j = 0; j < nodos.Count; j++)
@@ -61,11 +62,11 @@ namespace COMPI_PY1.Clase
 
             escribir.Close();
 
-            string texto = "/K dot -Tpng Reportes\\" + nombre.lexema + "Grafo.txt -o Reportes\\" + nombre.lexema + "Grafo.jpg";
+            string texto = "/K dot -Tpng Reportes\\" + nombre.lexema + "AFN.txt -o Reportes\\" + nombre.lexema + "AFN.jpg";
 
             //System.Diagnostics.Process.Start("CMD.exe", "/K dot -Tpng Ella.txt -o UML.png");
 
-            System.Diagnostics.Process.Start("CMD.exe", texto).Close();
+            Process.Start("CMD.exe", texto).Close();
             //System.Diagnostics.Process.Start("Reportes\\"+nombre.lexema+"Grafo.jpg");
         }
         
@@ -184,6 +185,7 @@ namespace COMPI_PY1.Clase
 
                 //cambiar tambien (id-1 por p) y (p por s) y (primero por segundo)
                 c.nombre = id.ToString();
+                c.id = id;
                 nodos[id - 1].p = "ε";
                 nodos[id - 1].primero = c;
                 nodos.Add(c);

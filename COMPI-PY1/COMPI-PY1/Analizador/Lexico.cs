@@ -12,6 +12,7 @@ namespace COMPI_PY1.Analizador
     {
         public List<Token> listaT { get; set; }
         public List<TokenError> listaE { get; set; }
+        public List<Conjunto> conjuntos { get; set; }
         public string texto { get; set; }
         public RichTextBox salida { get; set; }
         public ComboBox seleccion { get; set; }
@@ -25,6 +26,7 @@ namespace COMPI_PY1.Analizador
             this.listaT = new List<Token>();
             this.listaE = new List<TokenError>();
             this.expreciones = new List<Exprecion>();
+            this.conjuntos = new List<Conjunto>();
         }
      
         public void Analizar() {
@@ -297,11 +299,15 @@ namespace COMPI_PY1.Analizador
                     case 8:
                         if (caracter.Equals('\\'))
                         {
-                            lexema += caracter;
                             puntero++;
                             estado = 9;
                         }
-                        else if (!caracter.Equals('\"'))
+                        else if (caracter.Equals('['))
+                        {
+                            puntero++;
+                            estado = 11;
+                        }
+                        else if (!caracter.Equals('"'))
                         {
                             lexema += caracter;
                             puntero++;
@@ -318,9 +324,34 @@ namespace COMPI_PY1.Analizador
                         break;
 
                     case 9:
-                        lexema += caracter;
-                        puntero++;
-                        estado = 8;
+                        if (caracter.Equals('"') || caracter.Equals('\''))
+                        {
+                            lexema += caracter;
+                            puntero++;
+                            estado = 8;
+                        }
+                        else if (caracter.Equals('t'))
+                        {
+                            caracter = (char)9;
+                            lexema += caracter;
+                            puntero++;
+                            estado = 8;
+                        }
+                        else if (caracter.Equals('n'))
+                        {
+                            caracter = (char) 10;
+                            lexema += caracter;
+                            puntero++;
+                            estado = 8;
+                        }
+                        else
+                        {
+                            lexema += "\\";
+                            lexema += caracter;
+                            puntero++;
+                            estado = 8;
+                        }
+                        
                         break;
 
                     case 10:
@@ -338,6 +369,119 @@ namespace COMPI_PY1.Analizador
                             lexema = "";
                             puntero--;
                             estado = 100;
+                        }
+                        break;
+
+                    case 11:
+                        if (caracter.Equals(':'))
+                        {
+                            estado = 12;
+                            puntero++;
+                        }
+                        else
+                        {
+                            lexema += "[" + caracter;
+                            puntero++;
+                            estado = 8;
+                        }
+                        break;
+
+                    case 12:
+                        if (Char.ToLower(caracter). Equals('t'))
+                        {
+                            estado = 13;
+                            puntero++;
+                        }
+                        else
+                        {
+                            lexema += "[:" + caracter;
+                            puntero++;
+                            estado = 8;
+                        }
+                        break;
+
+                    case 13:
+                        if (Char.ToLower(caracter).Equals('o'))
+                        {
+                            estado = 14;
+                            puntero++;
+                        }
+                        else
+                        {
+                            lexema += "[:t" + caracter;
+                            puntero++;
+                            estado = 8;
+                        }
+                        break;
+
+                    case 14:
+                        if (Char.ToLower(caracter).Equals('d'))
+                        {
+                            estado = 15;
+                            puntero++;
+                        }
+                        else
+                        {
+                            lexema += "[:to" + caracter;
+                            puntero++;
+                            estado = 8;
+                        }
+                        break;
+
+                    case 15:
+                        if (Char.ToLower(caracter).Equals('o'))
+                        {
+                            estado = 16;
+                            puntero++;
+                        }
+                        else
+                        {
+                            lexema += "[:tod" + caracter;
+                            puntero++;
+                            estado = 8;
+                        }
+                        break;
+
+                    case 16:
+                        if (Char.ToLower(caracter).Equals(':'))
+                        {
+                            estado = 17;
+                            puntero++;
+                        }
+                        else
+                        {
+                            lexema += "[:todo" + caracter;
+                            puntero++;
+                            estado = 8;
+                        }
+                        break;
+
+                    case 17:
+                        if (Char.ToLower(caracter).Equals(']'))
+                        {
+                            estado = 18;
+                            puntero++;
+                        }
+                        else
+                        {
+                            lexema += "[:todo:" + caracter;
+                            puntero++;
+                            estado = 8;
+                        }
+                        break;
+
+                    case 18:
+                        if (!caracter.Equals('\n'))
+                        {
+                            lexema += caracter;
+                            puntero++;
+                        }
+                        else
+                        {
+                            caracter = (char)10;
+                            lexema += caracter;
+                            puntero++;
+                            estado = 8;
                         }
                         break;
 
@@ -376,17 +520,18 @@ namespace COMPI_PY1.Analizador
             else
             {
                 ReporteToken();
-                Expreciones();
+                ExprecionesYConjuntos();
             }
 
 
         }
 
-        public void Expreciones() {
+        public void ExprecionesYConjuntos() {
             //epsilon ε
 
             Token temp = null;
             Exprecion nuevo = new Exprecion();
+            Conjunto nuevoC = null;
             int estado = 0;
             int i = 0;
 
@@ -399,7 +544,7 @@ namespace COMPI_PY1.Analizador
                     case 0:
                         if (no == 14) {
                             i++;
-                            estado = 1;
+                            estado = 5;
                         }
                         else if (no == 15)
                         {
@@ -455,9 +600,10 @@ namespace COMPI_PY1.Analizador
                             expreciones.Add(nuevo);
                             nuevo.grafo.comienzo(nuevo.tokens, nuevo.nombre);
                             nuevo.grafo.graficar();
-                            nuevo.crearPrimera();
-                            seleccion.Items.Add(nuevo.nombre.lexema+"Grafo");
-                            seleccion.Items.Add(nuevo.nombre.lexema + "Transicion");
+                            nuevo.comienzo();
+                            seleccion.Items.Add(nuevo.nombre.lexema+"AFN");
+                            seleccion.Items.Add(nuevo.nombre.lexema + "Tabla");
+                            seleccion.Items.Add(nuevo.nombre.lexema + "AFD");
                             i++;
                             estado = 0;
                         }
@@ -482,6 +628,52 @@ namespace COMPI_PY1.Analizador
                         else
                         {
                             estado = 1;
+                        }
+                        break;
+
+                    case 5:
+                        if (no == 8)
+                        {
+                            i++;
+                            estado = 6;
+                        }
+                        else
+                        {
+                            estado = 1;
+                            i++;
+                        }
+                        break;
+
+                    case 6:
+                        if (no == 15)
+                        {
+                            nuevoC = new Conjunto(temp);
+                            i++;
+                            estado = 6;
+                        }
+                        else
+                        {
+                            estado = 1;
+                            i++;
+                        }
+                        break;
+
+                    case 7:
+                        if (no == 15 || no == 18)
+                        {
+                            i++;
+                            //
+                            estado = 8;
+                        }
+                        else if (no == 16 || no == 17)
+                        {
+                            estado = 10;
+                            i++;
+                        }
+                        else
+                        {
+                            estado = 1;
+                            i++;
                         }
                         break;
 

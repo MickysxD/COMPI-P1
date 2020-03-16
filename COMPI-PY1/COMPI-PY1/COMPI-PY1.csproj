@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analizador\Lexico.cs" />
+    <Compile Include="Clase\Conjunto.cs" />
     <Compile Include="Clase\Grafo.cs" />
     <Compile Include="Clase\Exprecion.cs" />
     <Compile Include="Clase\NodoG.cs" />
