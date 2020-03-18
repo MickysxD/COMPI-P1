@@ -15,8 +15,9 @@ namespace COMPI_PY1.Clase
         public List<Transicion> transiciones { get; set; }
         int estado = 0;
 
-        public Exprecion()
+        public Exprecion(Token nombre)
         {
+            this.nombre = nombre;
             this.tokens = new List<Token>();
             this.transiciones = new List<Transicion>();
             this.grafo = new Grafo();
@@ -138,6 +139,7 @@ namespace COMPI_PY1.Clase
                 //buscarCoincidencias(temp, nt);
             }
         }
+
         public void buscarCoincidencias(Transicion temp, NodoG raiz)
         {
             if (raiz.primero != null && raiz.p.Equals(temp.nombre) && raiz.idp == temp.tipo)
@@ -343,5 +345,11 @@ namespace COMPI_PY1.Clase
             //System.Diagnostics.Process.Start("Reportes\\"+nombre.lexema+"Grafo.jpg");
         }
 
+        public bool validar(string texto) {
+
+            //
+
+            return true;
+        }
     }
 }

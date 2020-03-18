@@ -363,8 +363,6 @@ namespace COMPI_PY1.Clase
             if (esta)
             {
                 transiciones.Add(nuevo);
-                //transiciones = transiciones.Distinct().ToList();
-                //transiciones.Sort();
             }
         }
     }

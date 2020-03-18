@@ -17,7 +17,7 @@ namespace COMPI_PY1.Analizador
         public RichTextBox salida { get; set; }
         public ComboBox seleccion { get; set; }
         public List<Exprecion> expreciones { get; set; }
-
+        public List<Entrada> entradas { get; set; }
         public Lexico(string texto, RichTextBox t, ComboBox seleccion)
         {
             this.texto = texto;
@@ -144,7 +144,7 @@ namespace COMPI_PY1.Analizador
                             puntero++;
                             estado = 3;
                         }
-                        else if ((char.IsLetterOrDigit(caracter) && caracter < 123))
+                        else if ((char.IsLetter(caracter) && caracter < 123))
                         {
                             lexema += caracter;
                             puntero++;
@@ -166,6 +166,17 @@ namespace COMPI_PY1.Analizador
                             puntero++;
                             lexema += caracter;
                             estado = 10;
+                        }
+                        else if (caracter.Equals('['))
+                        {
+                            puntero++;
+                            estado = 11;
+                        }
+                        else if (caracter.Equals('\\'))
+                        {
+                            lexema += caracter;
+                            puntero++;
+                            estado = 14;
                         }
                         else
                         {
@@ -302,11 +313,6 @@ namespace COMPI_PY1.Analizador
                             puntero++;
                             estado = 9;
                         }
-                        else if (caracter.Equals('['))
-                        {
-                            puntero++;
-                            estado = 11;
-                        }
                         else if (!caracter.Equals('"'))
                         {
                             lexema += caracter;
@@ -324,23 +330,9 @@ namespace COMPI_PY1.Analizador
                         break;
 
                     case 9:
-                        if (caracter.Equals('"') || caracter.Equals('\''))
+                        if (caracter.Equals('"') || caracter.Equals('\'') || caracter.Equals('n') || caracter.Equals('t'))
                         {
-                            lexema += caracter;
-                            puntero++;
-                            estado = 8;
-                        }
-                        else if (caracter.Equals('t'))
-                        {
-                            caracter = (char)9;
-                            lexema += caracter;
-                            puntero++;
-                            estado = 8;
-                        }
-                        else if (caracter.Equals('n'))
-                        {
-                            caracter = (char) 10;
-                            lexema += caracter;
+                            lexema += "\\" + caracter;
                             puntero++;
                             estado = 8;
                         }
@@ -380,111 +372,64 @@ namespace COMPI_PY1.Analizador
                         }
                         else
                         {
-                            lexema += "[" + caracter;
-                            puntero++;
-                            estado = 8;
+                            puntero--;
+                            estado = 100;
                         }
                         break;
 
                     case 12:
-                        if (Char.ToLower(caracter). Equals('t'))
+                        if (caracter. Equals('\n'))
+                        {
+                            puntero++;
+                        }
+                        else if (caracter.Equals(':'))
                         {
                             estado = 13;
                             puntero++;
                         }
                         else
                         {
-                            lexema += "[:" + caracter;
+                            lexema += caracter;
                             puntero++;
-                            estado = 8;
                         }
                         break;
 
                     case 13:
-                        if (Char.ToLower(caracter).Equals('o'))
+                        if (caracter.Equals(']'))
                         {
-                            estado = 14;
+                            listaT.Add(new Token(token, 19, "Texto", lexema, fila, columna));
+                            token++;
+                            columna++;
+                            lexema = "";
                             puntero++;
+                            estado = 0;
                         }
                         else
                         {
-                            lexema += "[:t" + caracter;
-                            puntero++;
-                            estado = 8;
+                            puntero = puntero - lexema.Length - 3;
+                            lexema = "";
+                            estado = 100;
                         }
                         break;
-
+                        
                     case 14:
-                        if (Char.ToLower(caracter).Equals('d'))
-                        {
-                            estado = 15;
-                            puntero++;
-                        }
-                        else
-                        {
-                            lexema += "[:to" + caracter;
-                            puntero++;
-                            estado = 8;
-                        }
-                        break;
-
-                    case 15:
-                        if (Char.ToLower(caracter).Equals('o'))
-                        {
-                            estado = 16;
-                            puntero++;
-                        }
-                        else
-                        {
-                            lexema += "[:tod" + caracter;
-                            puntero++;
-                            estado = 8;
-                        }
-                        break;
-
-                    case 16:
-                        if (Char.ToLower(caracter).Equals(':'))
-                        {
-                            estado = 17;
-                            puntero++;
-                        }
-                        else
-                        {
-                            lexema += "[:todo" + caracter;
-                            puntero++;
-                            estado = 8;
-                        }
-                        break;
-
-                    case 17:
-                        if (Char.ToLower(caracter).Equals(']'))
-                        {
-                            estado = 18;
-                            puntero++;
-                        }
-                        else
-                        {
-                            lexema += "[:todo:" + caracter;
-                            puntero++;
-                            estado = 8;
-                        }
-                        break;
-
-                    case 18:
-                        if (!caracter.Equals('\n'))
+                        if (caracter.Equals('"') || caracter.Equals('\'') || caracter.Equals('n') || caracter.Equals('t'))
                         {
                             lexema += caracter;
+                            listaT.Add(new Token(token, 19, "Texto", lexema, fila, columna));
+                            token++;
+                            columna++;
+                            lexema = "";
                             puntero++;
+                            estado = 0;
                         }
                         else
                         {
-                            caracter = (char)10;
-                            lexema += caracter;
-                            puntero++;
-                            estado = 8;
+                            puntero--;
+                            estado = 100;
                         }
                         break;
-
+                        
                     case 100:
                         if (!char.IsLetterOrDigit(caracter) && 32 < caracter && caracter < 126)
                         {
@@ -503,7 +448,6 @@ namespace COMPI_PY1.Analizador
                             estado = 0;
                             puntero++;
                         }
-                        
                         break;
 
                     default:
@@ -530,8 +474,9 @@ namespace COMPI_PY1.Analizador
             //epsilon ε
 
             Token temp = null;
-            Exprecion nuevo = new Exprecion();
+            Exprecion nuevo = null;
             Conjunto nuevoC = null;
+            Entrada nuevoE = null;
             int estado = 0;
             int i = 0;
 
@@ -550,8 +495,8 @@ namespace COMPI_PY1.Analizador
                         {
                             i++;
                             estado = 2;
-                            nuevo = new Exprecion();
-                            nuevo.nombre = temp;
+                            nuevo = new Exprecion(temp);
+                            nuevoE = new Entrada(temp);
                         }
                         else
                         {
@@ -576,6 +521,11 @@ namespace COMPI_PY1.Analizador
                         {
                             i++;
                             estado = 3;
+                        }
+                        if (no == 8)
+                        {
+                            i++;
+                            estado = 17;
                         }
                         else
                         {
@@ -649,7 +599,7 @@ namespace COMPI_PY1.Analizador
                         {
                             nuevoC = new Conjunto(temp);
                             i++;
-                            estado = 6;
+                            estado = 7;
                         }
                         else
                         {
@@ -659,16 +609,285 @@ namespace COMPI_PY1.Analizador
                         break;
 
                     case 7:
-                        if (no == 15 || no == 18)
+                        if (no == 20)
                         {
                             i++;
-                            //
                             estado = 8;
+                        }
+                        else
+                        {
+                            estado = 1;
+                            i++;
+                        }
+                        break;
+
+                    case 8:
+                        if (no == 15)
+                        {
+                            i++;
+                            nuevoC.caracteres.Add(temp.lexema);
+                            estado = 9;
+                        }
+                        else if (no == 19)
+                        {
+                            i++;
+                            nuevoC.caracteres.Add(temp.lexema);
+                            estado = 11;
+                        }
+                        else if (no == 18)
+                        {
+                            i++;
+                            nuevoC.caracteres.Add(temp.lexema);
+                            estado = 13;
                         }
                         else if (no == 16 || no == 17)
                         {
-                            estado = 10;
                             i++;
+                            nuevoC.caracteres.Add(temp.lexema);
+                            estado = 15;
+                        }
+                        else
+                        {
+                            estado = 1;
+                            i++;
+                        }
+                        break;
+
+                    case 9:
+                        if (no == 9)
+                        {
+                            i++;
+                            conjuntos.Add(nuevoC);
+                            estado = 0;
+                        }
+                        else if (no == 10)
+                        {
+                            i++;
+                            estado = 10;
+                        }
+                        else if (no == 11)
+                        {
+                            estado = 11;
+                        }
+                        else
+                        {
+                            estado = 1;
+                            i++;
+                        }
+                        break;
+
+                    case 10:
+                        if (no == 15)
+                        {
+                            i++;
+                            
+                            if (nuevoC.caracteres[0].Length == 1 && temp.lexema.Length == 1 && nuevoC.caracteres[0][0] < temp.lexema[0])
+                            {
+                                char inter = nuevoC.caracteres[0][0];
+                                
+                                while(inter < temp.lexema[0])
+                                {
+                                    inter++;
+                                    nuevoC.caracteres.Add(inter.ToString());
+                                }
+                                
+                                estado = 100;
+                            }
+                            else
+                            {
+                                estado = 1;
+                            }
+
+                        }
+                        else
+                        {
+                            estado = 1;
+                            i++;
+                        }
+                        break;
+
+                    case 11:
+                        if (no == 11)
+                        {
+                            i++;
+                            estado = 12;
+                        }
+                        else if (no == 9)
+                        {
+                            i++;
+                            conjuntos.Add(nuevoC);
+                            estado = 0;
+                        }
+                        else
+                        {
+                            estado = 1;
+                            i++;
+                        }
+                        break;
+
+                    case 12:
+                        if (no == 15 || no == 16 || no == 17 || no == 18 || no == 19)
+                        {
+                            i++;
+                            nuevoC.caracteres.Add(temp.lexema);
+                            estado = 11;
+                        }
+                        else
+                        {
+                            estado = 1;
+                            i++;
+                        }
+                        break;
+
+                    case 13:
+                        if (no == 9)
+                        {
+                            i++;
+                            conjuntos.Add(nuevoC);
+                            estado = 0;
+                        }
+                        else if (no == 10)
+                        {
+                            i++;
+                            estado = 14;
+                        }
+                        else if (no == 11)
+                        {
+                            estado = 11;
+                        }
+                        else
+                        {
+                            estado = 1;
+                            i++;
+                        }
+                        break;
+
+                    case 14:
+                        if (no == 18)
+                        {
+                            i++;
+
+                            if (nuevoC.caracteres[0][0] < temp.lexema[0])
+                            {
+                                char inter = nuevoC.caracteres[0][0];
+
+                                while (inter < temp.lexema[0])
+                                {
+                                    inter++;
+                                    if (!char.IsLetterOrDigit(inter))
+                                    {
+                                        nuevoC.caracteres.Add(inter.ToString());
+                                    }
+                                }
+
+                                estado = 100;
+                            }
+                            else
+                            {
+                                i++;
+                                estado = 1;
+                            }
+                            
+                        }
+                        else
+                        {
+                            estado = 1;
+                            i++;
+                        }
+                        break;
+
+                    case 15:
+                        if (no == 9)
+                        {
+                            i++;
+                            conjuntos.Add(nuevoC);
+                            estado = 0;
+                        }
+                        else if (no == 10)
+                        {
+                            i++;
+                            estado = 16;
+                        }
+                        else if (no == 11)
+                        {
+                            estado = 11;
+                        }
+                        else
+                        {
+                            estado = 1;
+                            i++;
+                        }
+                        break;
+
+                    case 16:
+                        if (no == 16 || no==17)
+                        {
+                            i++;
+
+                            int uno, dos;
+                            
+                            if (Int32.TryParse(nuevoC.caracteres[0], out uno) && Int32.TryParse(temp.lexema, out dos)) {
+                                if (uno < dos)
+                                {
+
+                                    while (uno < dos)
+                                    {
+                                        uno++;
+                                        nuevoC.caracteres.Add(uno.ToString());
+                                    }
+
+                                    estado = 100;
+                                }
+                                else
+                                {
+                                    estado = 1;
+                                }
+                            }
+                            else
+                            {
+                                estado = 1;
+                            }
+
+                        }
+                        else
+                        {
+                            estado = 1;
+                            i++;
+                        }
+                        break;
+
+                    case 17:
+                        if (no == 19)
+                        {
+                            i++;
+                            nuevoE.texto = temp.lexema;
+                            estado = 18;
+                        }
+                        else
+                        {
+                            estado = 1;
+                        }
+                        break;
+
+                    case 18:
+                        if (no == 9)
+                        {
+                            i++;
+                            entradas.Add(nuevoE);
+                            estado = 0;
+                        }
+                        else
+                        {
+                            estado = 1;
+                        }
+                        break;
+
+                    case 100:
+                        if (no == 9)
+                        {
+                            i++;
+                            estado = 0;
+                            conjuntos.Add(nuevoC);
                         }
                         else
                         {
@@ -681,6 +900,37 @@ namespace COMPI_PY1.Analizador
                         break;
                 }
             }
+
+            for (int j = 0; j < entradas.Count; j++)
+            {
+
+                for (int k = 0; k < expreciones.Count; k++)
+                {
+                    if (entradas[j].nombre.lexema == expreciones[k].nombre.lexema)
+                    {
+                        entradas[j].exprecion = expreciones[k];
+                        break;
+                    }
+                }
+
+            }
+
+            for (int j = 0; j < entradas.Count; j++)
+            {
+                if (entradas[j].exprecion == null)
+                {
+                    salida.AppendText("La exprecion regular: " + entradas[j].exprecion.nombre.lexema + "no existe para la entrada" + entradas[j].texto);
+                }
+                if (entradas[j].Comienzo())
+                {
+                    salida.AppendText("La entrada: \"" + entradas[j].texto + "\" SI es valida con la exprecion regular: " + entradas[j].exprecion.nombre.lexema);
+                }
+                else
+                {
+                    salida.AppendText("La entrada: \"" + entradas[j].texto + "\" NO  es valida con la exprecion regular: " + entradas[j].exprecion.nombre.lexema);
+                }
+            }
+
         }
 
         public void ReporteToken()
