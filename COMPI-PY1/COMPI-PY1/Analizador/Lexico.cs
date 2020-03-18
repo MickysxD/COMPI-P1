@@ -925,9 +925,9 @@ namespace COMPI_PY1.Analizador
             {
                 if (entradas[j].exprecion == null)
                 {
-                    salida.AppendText("La exprecion regular: " + entradas[j].nombre.lexema + "no existe para la entrada" + entradas[j].texto + "\n");
+                    salida.AppendText("La exprecion regular: " + entradas[j].nombre.lexema + " no existe para la entrada: \"" + entradas[j].texto + "\"\n");
                 }
-                if (entradas[j].Comienzo())
+                else if (entradas[j].Comienzo())
                 {
                     salida.AppendText("La entrada: \"" + entradas[j].texto + "\" SI es valida con la exprecion regular: " + entradas[j].exprecion.nombre.lexema + "\n");
                 }
