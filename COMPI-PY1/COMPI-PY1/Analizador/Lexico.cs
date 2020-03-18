@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 
 namespace COMPI_PY1.Analizador
 {
@@ -461,6 +463,7 @@ namespace COMPI_PY1.Analizador
             {
                 ReporteToken();
                 ReporteError();
+                ReporteErrores();
             }
             else
             {
@@ -937,6 +940,49 @@ namespace COMPI_PY1.Analizador
                 }
             }
 
+        }
+
+        public void ReporteErrores()
+        {
+            FileStream fs = new FileStream("Reportes\\TablaErrores.pdf", FileMode.Create);
+            Document documento = new Document(PageSize.LETTER);
+            PdfWriter pw = PdfWriter.GetInstance(documento, fs);
+
+            documento.Open();
+
+            var MyFontBold = FontFactory.GetFont(FontFactory.TIMES_BOLD, 11);
+            var MyFontBold1 = FontFactory.GetFont(FontFactory.TIMES, 10);
+            var MyFontBold2 = FontFactory.GetFont(FontFactory.TIMES_BOLD, 18);
+
+            documento.Add(new Paragraph("\nUNIVERSIDAD DE SAN CARLOS DE GUATEMALA \nFACULTAD DE INGENIERIA \nESCUELA DE CIENCIAS Y SISTEMAS \nORGANIZACION DE LENGUAJES Y COMPILADORES 1 \nPRIMER SEMESTRE 2020 \n", MyFontBold));
+            
+            documento.Add(new Paragraph("\n"));
+            Paragraph parr = new Paragraph("Tabla de Errores", MyFontBold2);
+            parr.Alignment = Element.ALIGN_CENTER;
+            documento.Add(parr);
+            documento.Add(new Paragraph("\n"));
+
+            PdfPTable tabla = new PdfPTable(4);
+            tabla.WidthPercentage = 80f;
+            
+            tabla.AddCell(new Paragraph("ID", MyFontBold));
+            tabla.AddCell(new Paragraph("Lexema", MyFontBold));
+            tabla.AddCell(new Paragraph("Fila", MyFontBold));
+            tabla.AddCell(new Paragraph("Columna", MyFontBold));
+
+            foreach (var item in listaE)
+            {
+                tabla.AddCell(new Paragraph(item.noToken.ToString(), MyFontBold1));
+                tabla.AddCell(new Paragraph(item.lexema, MyFontBold1));
+                tabla.AddCell(new Paragraph(item.fila.ToString(), MyFontBold1));
+                tabla.AddCell(new Paragraph(item.columna.ToString(), MyFontBold1));
+            }
+
+            documento.Add(tabla);
+
+            documento.Close();
+
+            Process.Start("Reportes\\TablaErrores.pdf");
         }
 
         public void ReporteToken()
