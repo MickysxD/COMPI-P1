@@ -27,6 +27,7 @@ namespace COMPI_PY1.Analizador
             this.listaE = new List<TokenError>();
             this.expreciones = new List<Exprecion>();
             this.conjuntos = new List<Conjunto>();
+            this.entradas = new List<Entrada>();
         }
      
         public void Analizar() {
@@ -206,9 +207,9 @@ namespace COMPI_PY1.Analizador
                         }
                         else
                         {
-                            listaT.Add(new Token(token, 13, "Comentario de una linea", lexema, fila, columna));
-                            token++;
-                            columna++;
+                            //listaT.Add(new Token(token, 13, "Comentario de una linea", lexema, fila, columna));
+                            //token++;
+                            //columna++;
                             lexema = "";
                             estado = 0;
                         }
@@ -245,9 +246,9 @@ namespace COMPI_PY1.Analizador
                     case 5:
                         if (caracter.Equals('>'))
                         {
-                            listaT.Add(new Token(token, 13, "Comentario multilinea", lexema, fila, columna));
-                            token++;
-                            columna++;
+                            //listaT.Add(new Token(token, 13, "Comentario multilinea", lexema, fila, columna));
+                            //token++;
+                            //columna++;
                             puntero++;
                             lexema = "";
                             estado = 0;
@@ -522,7 +523,7 @@ namespace COMPI_PY1.Analizador
                             i++;
                             estado = 3;
                         }
-                        if (no == 8)
+                        else if (no == 8)
                         {
                             i++;
                             estado = 17;
@@ -901,6 +902,11 @@ namespace COMPI_PY1.Analizador
                 }
             }
 
+            for (int j = 0; j < expreciones.Count; j++)
+            {
+                expreciones[j].conjuntos = conjuntos;
+            }
+
             for (int j = 0; j < entradas.Count; j++)
             {
 
@@ -919,15 +925,15 @@ namespace COMPI_PY1.Analizador
             {
                 if (entradas[j].exprecion == null)
                 {
-                    salida.AppendText("La exprecion regular: " + entradas[j].exprecion.nombre.lexema + "no existe para la entrada" + entradas[j].texto);
+                    salida.AppendText("La exprecion regular: " + entradas[j].nombre.lexema + "no existe para la entrada" + entradas[j].texto + "\n");
                 }
                 if (entradas[j].Comienzo())
                 {
-                    salida.AppendText("La entrada: \"" + entradas[j].texto + "\" SI es valida con la exprecion regular: " + entradas[j].exprecion.nombre.lexema);
+                    salida.AppendText("La entrada: \"" + entradas[j].texto + "\" SI es valida con la exprecion regular: " + entradas[j].exprecion.nombre.lexema + "\n");
                 }
                 else
                 {
-                    salida.AppendText("La entrada: \"" + entradas[j].texto + "\" NO  es valida con la exprecion regular: " + entradas[j].exprecion.nombre.lexema);
+                    salida.AppendText("La entrada: \"" + entradas[j].texto + "\" NO  es valida con la exprecion regular: " + entradas[j].exprecion.nombre.lexema + "\n");
                 }
             }
 

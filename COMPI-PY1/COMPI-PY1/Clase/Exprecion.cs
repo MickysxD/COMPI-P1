@@ -13,6 +13,8 @@ namespace COMPI_PY1.Clase
         public Grafo grafo { get; set;}
         public List<Token> tokens { get; set; }
         public List<Transicion> transiciones { get; set; }
+        public List<Conjunto> conjuntos { get; set; }
+
         int estado = 0;
 
         public Exprecion(Token nombre)
@@ -347,9 +349,101 @@ namespace COMPI_PY1.Clase
 
         public bool validar(string texto) {
 
-            //
+            Transicion columna = transiciones[0];
+            Transicion fila = columna.siguiente;
+            int i = 0;
+            bool validado = false;
 
-            return true;
+            while (fila != null)
+            {
+                if (columna.aceptacion && texto.Length == i)
+                {
+                    return true;
+                }
+                else if (fila.estado != null)
+                {
+                    if (fila.tipo == 15)
+                    {
+                        //recorre conjuntos
+                        for (int j = 0; j < conjuntos.Count; j++)
+                        {
+                            //validar si conjunto es igual a estado
+                            if (conjuntos[j].nombre.lexema == fila.nombre)
+                            {
+                                //recorrer lista de caracteres del conjuto
+                                for (int k = 0; k < conjuntos[j].caracteres.Count; k++)
+                                {
+                                    //validar si es de tamanio 1
+                                    if (conjuntos[j].caracteres[k].Length == 1 && texto[i] == conjuntos[j].caracteres[k][0])
+                                    {
+                                        i++;
+                                        columna = fila.estado;
+                                        fila = columna;
+                                        break;
+                                    }
+                                    else if (conjuntos[j].caracteres[k].Length > 1)
+                                    {
+                                        int tempi = i;
+                                        bool malo = false;
+                                        for (int l = 0; l < conjuntos[j].caracteres[k].Length; l++)
+                                        {
+                                            if (tempi < texto.Length && texto[tempi] == conjuntos[j].caracteres[k][l])
+                                            {
+                                                tempi++;
+                                            }
+                                            else
+                                            {
+                                                malo = true;
+                                                break;
+                                            }
+                                        }
+
+                                        if (!malo)
+                                        {
+                                            i = tempi;
+                                            columna = fila.estado;
+                                            fila = columna;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                break;
+                            }
+                        }
+                    }
+                    else if (fila.tipo == 19)
+                    {
+                        int tempi = i;
+                        bool malo = false;
+                        //recorre el texto 
+                        for (int j = 0; j < fila.nombre.Length; j++)
+                        {
+                            if (tempi < texto.Length && texto[tempi] == fila.nombre[j])
+                            {
+                                tempi++;
+                            }
+                            else
+                            {
+                                malo = true;
+                                break;
+                            }
+                        }
+
+                        if (!malo)
+                        {
+                            i = tempi;
+                            columna = fila.estado;
+                            fila = columna;
+                        }
+                    }
+
+                }
+
+                fila = fila.siguiente;
+            }
+                
+            return false;
         }
     }
 }

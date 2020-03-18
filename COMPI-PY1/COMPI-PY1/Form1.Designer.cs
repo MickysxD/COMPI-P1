@@ -35,7 +35,6 @@
             this.guardarComoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.salirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analizarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.xMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.entrada = new System.Windows.Forms.TabControl();
             this.salida = new System.Windows.Forms.RichTextBox();
             this.button1 = new System.Windows.Forms.Button();
@@ -55,8 +54,7 @@
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.archivoToolStripMenuItem,
-            this.analizarToolStripMenuItem,
-            this.xMLToolStripMenuItem});
+            this.analizarToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1478, 28);
@@ -77,28 +75,28 @@
             // abrirToolStripMenuItem
             // 
             this.abrirToolStripMenuItem.Name = "abrirToolStripMenuItem";
-            this.abrirToolStripMenuItem.Size = new System.Drawing.Size(188, 26);
+            this.abrirToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.abrirToolStripMenuItem.Text = "Abrir";
             this.abrirToolStripMenuItem.Click += new System.EventHandler(this.abrirToolStripMenuItem_Click);
             // 
             // guardarToolStripMenuItem
             // 
             this.guardarToolStripMenuItem.Name = "guardarToolStripMenuItem";
-            this.guardarToolStripMenuItem.Size = new System.Drawing.Size(188, 26);
+            this.guardarToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.guardarToolStripMenuItem.Text = "Guardar";
             this.guardarToolStripMenuItem.Click += new System.EventHandler(this.guardarToolStripMenuItem_Click);
             // 
             // guardarComoToolStripMenuItem
             // 
             this.guardarComoToolStripMenuItem.Name = "guardarComoToolStripMenuItem";
-            this.guardarComoToolStripMenuItem.Size = new System.Drawing.Size(188, 26);
+            this.guardarComoToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.guardarComoToolStripMenuItem.Text = "Guardar como...";
             this.guardarComoToolStripMenuItem.Click += new System.EventHandler(this.guardarComoToolStripMenuItem_Click);
             // 
             // salirToolStripMenuItem
             // 
             this.salirToolStripMenuItem.Name = "salirToolStripMenuItem";
-            this.salirToolStripMenuItem.Size = new System.Drawing.Size(188, 26);
+            this.salirToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.salirToolStripMenuItem.Text = "Salir";
             this.salirToolStripMenuItem.Click += new System.EventHandler(this.salirToolStripMenuItem_Click);
             // 
@@ -108,12 +106,6 @@
             this.analizarToolStripMenuItem.Size = new System.Drawing.Size(75, 24);
             this.analizarToolStripMenuItem.Text = "Analizar";
             this.analizarToolStripMenuItem.Click += new System.EventHandler(this.analizarToolStripMenuItem_Click);
-            // 
-            // xMLToolStripMenuItem
-            // 
-            this.xMLToolStripMenuItem.Name = "xMLToolStripMenuItem";
-            this.xMLToolStripMenuItem.Size = new System.Drawing.Size(50, 24);
-            this.xMLToolStripMenuItem.Text = "XML";
             // 
             // entrada
             // 
@@ -214,7 +206,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Proyecto1-COMPI1";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.panel.ResumeLayout(false);
@@ -242,7 +234,6 @@
         private System.Windows.Forms.ComboBox seleccion;
         private System.Windows.Forms.Panel panel;
         private System.Windows.Forms.PictureBox img;
-        private System.Windows.Forms.ToolStripMenuItem xMLToolStripMenuItem;
     }
 }
 
