@@ -43,7 +43,7 @@ namespace COMPI_PY1.Clase
         
         public void graficar()
         {
-            StreamWriter escribir = new StreamWriter("Reportes\\"+nombre.lexema+ "AFN.txt");
+            StreamWriter escribir = new StreamWriter("Reportes\\"+nombre.lexema+ "-AFN.txt");
             escribir.WriteLine("digraph D{\nrankdir=LR;");
 
             for (int j = 0; j < nodos.Count; j++)
@@ -62,7 +62,7 @@ namespace COMPI_PY1.Clase
 
             escribir.Close();
 
-            string texto = "/K dot -Tpng Reportes\\" + nombre.lexema + "AFN.txt -o Reportes\\" + nombre.lexema + "AFN.jpg";
+            string texto = "/K dot -Tpng Reportes\\" + nombre.lexema + "-AFN.txt -o Reportes\\" + nombre.lexema + "-AFN.jpg";
 
             //System.Diagnostics.Process.Start("CMD.exe", "/K dot -Tpng Ella.txt -o UML.png");
 

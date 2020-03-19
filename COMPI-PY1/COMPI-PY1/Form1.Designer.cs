@@ -44,6 +44,7 @@
             this.seleccion = new System.Windows.Forms.ComboBox();
             this.panel = new System.Windows.Forms.Panel();
             this.img = new System.Windows.Forms.PictureBox();
+            this.documentos = new System.Windows.Forms.ComboBox();
             this.menuStrip1.SuspendLayout();
             this.panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.img)).BeginInit();
@@ -75,28 +76,28 @@
             // abrirToolStripMenuItem
             // 
             this.abrirToolStripMenuItem.Name = "abrirToolStripMenuItem";
-            this.abrirToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.abrirToolStripMenuItem.Size = new System.Drawing.Size(188, 26);
             this.abrirToolStripMenuItem.Text = "Abrir";
             this.abrirToolStripMenuItem.Click += new System.EventHandler(this.abrirToolStripMenuItem_Click);
             // 
             // guardarToolStripMenuItem
             // 
             this.guardarToolStripMenuItem.Name = "guardarToolStripMenuItem";
-            this.guardarToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.guardarToolStripMenuItem.Size = new System.Drawing.Size(188, 26);
             this.guardarToolStripMenuItem.Text = "Guardar";
             this.guardarToolStripMenuItem.Click += new System.EventHandler(this.guardarToolStripMenuItem_Click);
             // 
             // guardarComoToolStripMenuItem
             // 
             this.guardarComoToolStripMenuItem.Name = "guardarComoToolStripMenuItem";
-            this.guardarComoToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.guardarComoToolStripMenuItem.Size = new System.Drawing.Size(188, 26);
             this.guardarComoToolStripMenuItem.Text = "Guardar como...";
             this.guardarComoToolStripMenuItem.Click += new System.EventHandler(this.guardarComoToolStripMenuItem_Click);
             // 
             // salirToolStripMenuItem
             // 
             this.salirToolStripMenuItem.Name = "salirToolStripMenuItem";
-            this.salirToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.salirToolStripMenuItem.Size = new System.Drawing.Size(188, 26);
             this.salirToolStripMenuItem.Text = "Salir";
             this.salirToolStripMenuItem.Click += new System.EventHandler(this.salirToolStripMenuItem_Click);
             // 
@@ -190,11 +191,21 @@
             this.img.TabIndex = 0;
             this.img.TabStop = false;
             // 
+            // documentos
+            // 
+            this.documentos.FormattingEnabled = true;
+            this.documentos.Location = new System.Drawing.Point(1116, 31);
+            this.documentos.Name = "documentos";
+            this.documentos.Size = new System.Drawing.Size(345, 24);
+            this.documentos.TabIndex = 11;
+            this.documentos.SelectedIndexChanged += new System.EventHandler(this.documentos_SelectedIndexChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1478, 749);
+            this.Controls.Add(this.documentos);
             this.Controls.Add(this.panel);
             this.Controls.Add(this.seleccion);
             this.Controls.Add(this.label2);
@@ -234,6 +245,7 @@
         private System.Windows.Forms.ComboBox seleccion;
         private System.Windows.Forms.Panel panel;
         private System.Windows.Forms.PictureBox img;
+        private System.Windows.Forms.ComboBox documentos;
     }
 }
 

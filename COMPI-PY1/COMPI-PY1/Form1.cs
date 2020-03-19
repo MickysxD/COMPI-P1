@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -26,7 +27,8 @@ namespace COMPI_PY1
             button1_Click(new object(), new EventArgs());
             seleccion.DropDownStyle = ComboBoxStyle.DropDownList;
             seleccion.Items.Clear();
-            //seleccion.Items.Add("Puto");
+            documentos.DropDownStyle = ComboBoxStyle.DropDownList;
+            documentos.Items.Clear();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -172,31 +174,41 @@ namespace COMPI_PY1
             }
             
         }
+        
 
         private void analizarToolStripMenuItem_Click(object sender, EventArgs e)
         {
             salida.Text = "";
             seleccion.Items.Clear();
-            //seleccion.Items.Add("Puto");
-            //try
-            //{
-                TabPage n = entrada.SelectedTab;
-                RichTextBox t = (RichTextBox)n.Controls[0];
-                if (t.Text != "")
-                {
-                    Lexico temp = new Lexico(t.Text, salida, seleccion);
-                    temp.Analizar();
+            documentos.Items.Clear();
+
+            img.Image = null;
+            
+            TabPage n = entrada.SelectedTab;
+            RichTextBox t = (RichTextBox)n.Controls[0];
+            if (t.Text != "")
+            {
+                Lexico temp = new Lexico(t.Text, salida, seleccion, documentos);
+                temp.Analizar();
                     
-
-                }
-            //}
-            //catch (NullReferenceException)
-            //{
-            //    MessageBox.Show("No hay pestaña, cree una...","Error");
-            //}
+            }
             
             
 
+        }
+
+        private void documentos_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string t = "Reportes\\" + documentos.GetItemText(documentos.SelectedItem) + ".xml";
+
+            try
+            {
+                Process.Start(t);
+            }
+            catch (Win32Exception)
+            {
+
+            }
         }
     }
 }

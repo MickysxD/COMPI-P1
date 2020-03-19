@@ -54,6 +54,8 @@
     <Compile Include="Clase\Entrada.cs" />
     <Compile Include="Clase\Grafo.cs" />
     <Compile Include="Clase\Exprecion.cs" />
+    <Compile Include="Clase\LexemaError.cs" />
+    <Compile Include="Clase\LexemaToken.cs" />
     <Compile Include="Clase\NodoG.cs" />
     <Compile Include="Clase\Token.cs" />
     <Compile Include="Clase\TokenError.cs" />

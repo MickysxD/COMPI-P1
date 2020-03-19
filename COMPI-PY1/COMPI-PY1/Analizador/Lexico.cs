@@ -18,13 +18,15 @@ namespace COMPI_PY1.Analizador
         public string texto { get; set; }
         public RichTextBox salida { get; set; }
         public ComboBox seleccion { get; set; }
+        public ComboBox documentos { get; set; }
         public List<Exprecion> expreciones { get; set; }
         public List<Entrada> entradas { get; set; }
-        public Lexico(string texto, RichTextBox t, ComboBox seleccion)
+        public Lexico(string texto, RichTextBox t, ComboBox seleccion, ComboBox documentos)
         {
             this.texto = texto;
             this.salida = t;
             this.seleccion = seleccion;
+            this.documentos = documentos;
             this.listaT = new List<Token>();
             this.listaE = new List<TokenError>();
             this.expreciones = new List<Exprecion>();
@@ -313,6 +315,7 @@ namespace COMPI_PY1.Analizador
                     case 8:
                         if (caracter.Equals('\\'))
                         {
+                            lexema += caracter;
                             puntero++;
                             estado = 9;
                         }
@@ -335,7 +338,7 @@ namespace COMPI_PY1.Analizador
                     case 9:
                         if (caracter.Equals('"') || caracter.Equals('\'') || caracter.Equals('n') || caracter.Equals('t'))
                         {
-                            lexema += "\\" + caracter;
+                            lexema += caracter;
                             puntero++;
                             estado = 8;
                         }
@@ -346,7 +349,6 @@ namespace COMPI_PY1.Analizador
                             puntero++;
                             estado = 8;
                         }
-                        
                         break;
 
                     case 10:
@@ -400,7 +402,7 @@ namespace COMPI_PY1.Analizador
                     case 13:
                         if (caracter.Equals(']'))
                         {
-                            listaT.Add(new Token(token, 19, "Texto", lexema, fila, columna));
+                            listaT.Add(new Token(token, 21, "Conjuto", lexema, fila, columna));
                             token++;
                             columna++;
                             lexema = "";
@@ -461,13 +463,13 @@ namespace COMPI_PY1.Analizador
 
             if (listaE.Count > 0)
             {
-                ReporteToken();
-                ReporteError();
-                ReporteErrores();
+                ReporteTokenXML();
+                ReporteErrorXML();
+                ReporteErroresPDF();
             }
             else
             {
-                ReporteToken();
+                ReporteTokenXML();
                 ExprecionesYConjuntos();
             }
 
@@ -555,9 +557,9 @@ namespace COMPI_PY1.Analizador
                             nuevo.grafo.comienzo(nuevo.tokens, nuevo.nombre);
                             nuevo.grafo.graficar();
                             nuevo.comienzo();
-                            seleccion.Items.Add(nuevo.nombre.lexema+"AFN");
-                            seleccion.Items.Add(nuevo.nombre.lexema + "Tabla");
-                            seleccion.Items.Add(nuevo.nombre.lexema + "AFD");
+                            seleccion.Items.Add(nuevo.nombre.lexema+"-AFN");
+                            seleccion.Items.Add(nuevo.nombre.lexema + "-Tabla");
+                            seleccion.Items.Add(nuevo.nombre.lexema + "-AFD");
                             i++;
                             estado = 0;
                         }
@@ -636,6 +638,15 @@ namespace COMPI_PY1.Analizador
                         {
                             i++;
                             nuevoC.caracteres.Add(temp.lexema);
+                            estado = 11;
+                        }
+                        else if (no == 21)
+                        {
+                            i++;
+                            for (int j = 0; j < temp.lexema.Length; j++)
+                            {
+                                nuevoC.caracteres.Add(temp.lexema[j].ToString());
+                            }
                             estado = 11;
                         }
                         else if (no == 18)
@@ -734,6 +745,15 @@ namespace COMPI_PY1.Analizador
                         {
                             i++;
                             nuevoC.caracteres.Add(temp.lexema);
+                            estado = 11;
+                        }
+                        else if (no == 21)
+                        {
+                            i++;
+                            for (int j = 0; j < temp.lexema.Length; j++)
+                            {
+                                nuevoC.caracteres.Add(temp.lexema[j].ToString());
+                            }
                             estado = 11;
                         }
                         else
@@ -912,7 +932,7 @@ namespace COMPI_PY1.Analizador
 
             for (int j = 0; j < entradas.Count; j++)
             {
-
+                //entradas[j].id = j;
                 for (int k = 0; k < expreciones.Count; k++)
                 {
                     if (entradas[j].nombre.lexema == expreciones[k].nombre.lexema)
@@ -930,19 +950,22 @@ namespace COMPI_PY1.Analizador
                 {
                     salida.AppendText("La exprecion regular: " + entradas[j].nombre.lexema + " no existe para la entrada: \"" + entradas[j].texto + "\"\n");
                 }
-                else if (entradas[j].Comienzo())
+                else if (entradas[j].Comienzo(j))
                 {
+                    documentos.Items.Add("ListaTokens-" + entradas[j].exprecion.nombre.lexema + "-" + j);
                     salida.AppendText("La entrada: \"" + entradas[j].texto + "\" SI es valida con la exprecion regular: " + entradas[j].exprecion.nombre.lexema + "\n");
                 }
                 else
                 {
+                    documentos.Items.Add("ListaTokens-" + entradas[j].exprecion.nombre.lexema + "-" + j);
+                    documentos.Items.Add("ListaErrores-" + entradas[j].exprecion.nombre.lexema + "-" + j);
                     salida.AppendText("La entrada: \"" + entradas[j].texto + "\" NO  es valida con la exprecion regular: " + entradas[j].exprecion.nombre.lexema + "\n");
                 }
             }
 
         }
 
-        public void ReporteErrores()
+        public void ReporteErroresPDF()
         {
             FileStream fs = new FileStream("Reportes\\TablaErrores.pdf", FileMode.Create);
             Document documento = new Document(PageSize.LETTER);
@@ -985,7 +1008,7 @@ namespace COMPI_PY1.Analizador
             Process.Start("Reportes\\TablaErrores.pdf");
         }
 
-        public void ReporteToken()
+        public void ReporteTokenXML()
         {
             XmlDocument documento = new XmlDocument();
             XmlElement raiz = documento.CreateElement("ListaTokens");
@@ -1056,7 +1079,7 @@ namespace COMPI_PY1.Analizador
             Process.Start("Reportes\\TablaTokens.xml");
         }
 
-        public void ReporteError()
+        public void ReporteErrorXML()
         {
             XmlDocument documento = new XmlDocument();
             XmlElement raiz = documento.CreateElement("ListaErrores");
