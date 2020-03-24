@@ -49,9 +49,21 @@ namespace COMPI_PY1.Clase
             for (int j = 0; j < nodos.Count; j++)
             {
                 NodoG n = nodos[j];
+                
                 escribir.WriteLine(n.nombre + "[label=\""+n.nombre+"\"];");
                 if (n.primero != null) {
-                    escribir.WriteLine(n.nombre + "->" + n.primero.nombre + "[label=\""+n.p+"\"];");
+                    if (n.p.Length == 1 && n.p[0] == 10)
+                    {
+                        escribir.WriteLine(n.nombre + "->" + n.primero.nombre + "[label=\"-Salto de linea-\"];");
+                    }
+                    else if (n.p.Length == 1 && n.p[0] == 9)
+                    {
+                        escribir.WriteLine(n.nombre + "->" + n.primero.nombre + "[label=\"-Tabulacion-\"];");
+                    }
+                    else
+                    {
+                        escribir.WriteLine(n.nombre + "->" + n.primero.nombre + "[label=\"" + n.p + "\"];");
+                    }
                 }
                 if (n.segundo != null)
                 {

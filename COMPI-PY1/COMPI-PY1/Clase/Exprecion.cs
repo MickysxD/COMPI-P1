@@ -258,6 +258,14 @@ namespace COMPI_PY1.Clase
                 {
                     escribir.Write("<td><i><b>Signo menor que</b></i></td>");
                 }
+                else if (nodot.lexema.Length == 1 && nodot.lexema[0] == 10)
+                {
+                    escribir.Write("<td><i><b>-Salto de linea-</b></i></td>");
+                }
+                else if (nodot.lexema.Length == 1 && nodot.lexema[0] == 9)
+                {
+                    escribir.Write("<td><i><b>-Tabulacion-</b></i></td>");
+                }
                 else
                 {
                     escribir.Write("<td><i><b>" + nodot.lexema + "</b></i></td>");
@@ -335,7 +343,18 @@ namespace COMPI_PY1.Clase
                 {
                     if (n.estado != null)
                     {
-                        escribir.WriteLine(temp.nombre+"->" + n.estado.nombre + "[label=\"" + n.nombre + "\"];");
+                        if (n.nombre.Length == 1 && n.nombre[0] == 10)
+                        {
+                            escribir.WriteLine(temp.nombre + "->" + n.estado.nombre + "[label=\"-Salto de linea-\"];");
+                        }
+                        else if (n.nombre.Length == 1 && n.nombre[0] == 9)
+                        {
+                            escribir.WriteLine(temp.nombre + "->" + n.estado.nombre + "[label=\"-Tabulacion-\"];");
+                        }
+                        else
+                        {
+                            escribir.WriteLine(temp.nombre + "->" + n.estado.nombre + "[label=\"" + n.nombre + "\"];");
+                        }
                     }
                     n = n.siguiente;
                 }

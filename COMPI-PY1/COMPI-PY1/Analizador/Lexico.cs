@@ -179,7 +179,7 @@ namespace COMPI_PY1.Analizador
                         }
                         else if (caracter.Equals('\\'))
                         {
-                            lexema += caracter;
+                            //lexema += caracter;
                             puntero++;
                             estado = 14;
                         }
@@ -315,7 +315,7 @@ namespace COMPI_PY1.Analizador
                     case 8:
                         if (caracter.Equals('\\'))
                         {
-                            lexema += caracter;
+                            //lexema += caracter;
                             puntero++;
                             estado = 9;
                         }
@@ -336,8 +336,34 @@ namespace COMPI_PY1.Analizador
                         break;
 
                     case 9:
-                        if (caracter.Equals('"') || caracter.Equals('\'') || caracter.Equals('n') || caracter.Equals('t'))
+                        //if (caracter.Equals('"') || caracter.Equals('\'') || caracter.Equals('n') || caracter.Equals('t'))
+                        //{
+                        //    lexema += caracter;
+                        //    puntero++;
+                        //    estado = 8;
+                        //}
+                        if (caracter.Equals('"'))
                         {
+                            lexema += "\\" + caracter;
+                            puntero++;
+                            estado = 8;
+                        }
+                        else if (caracter.Equals('\''))
+                        {
+                            lexema += caracter;
+                            puntero++;
+                            estado = 8;
+                        }
+                        else if (caracter.Equals('n'))
+                        {
+                            caracter = (char) 10;
+                            lexema += caracter;
+                            puntero++;
+                            estado = 8;
+                        }
+                        else if (caracter.Equals('t'))
+                        {
+                            caracter = (char) 9;
                             lexema += caracter;
                             puntero++;
                             estado = 8;
@@ -418,10 +444,40 @@ namespace COMPI_PY1.Analizador
                         break;
                         
                     case 14:
-                        if (caracter.Equals('"') || caracter.Equals('\'') || caracter.Equals('n') || caracter.Equals('t'))
+                        //if (caracter.Equals('"') || caracter.Equals('\'') || caracter.Equals('n') || caracter.Equals('t'))
+                        //{
+                        //    lexema += caracter;
+                        //    listaT.Add(new Token(token, 19, "Texto", lexema, fila, columna));
+                        //    token++;
+                        //    columna++;
+                        //    lexema = "";
+                        //    puntero++;
+                        //    estado = 0;
+                        //}
+                        if (caracter.Equals('"') || caracter.Equals('\''))
                         {
                             lexema += caracter;
                             listaT.Add(new Token(token, 19, "Texto", lexema, fila, columna));
+                            token++;
+                            columna++;
+                            lexema = "";
+                            puntero++;
+                            estado = 0;
+                        }
+                        else if (caracter.Equals('n'))
+                        {
+                            caracter = (char) 10;
+                            listaT.Add(new Token(token, 19, "Texto", caracter+"", fila, columna));
+                            token++;
+                            columna++;
+                            lexema = "";
+                            puntero++;
+                            estado = 0;
+                        }
+                        else if (caracter.Equals('t'))
+                        {
+                            caracter = (char) 9;
+                            listaT.Add(new Token(token, 19, "Texto", caracter+"", fila, columna));
                             token++;
                             columna++;
                             lexema = "";
